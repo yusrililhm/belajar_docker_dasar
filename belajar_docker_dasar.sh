@@ -61,3 +61,39 @@ docker volume rm namevolume
 
 # use volume
 docker container create --name namecontainer --mount="type=volume,source=namevolume,destination=path/to/file" image:tag
+
+# backup volume manual
+docker container create --name namecontainer --mount=host --mount=volume image:tag
+
+# backup with run
+docker container run --rm --name namecontainer --mount=host --mount=volume image:tag tar cvf /path/to/file.tar.gz /path
+
+# restore
+docker container run --rm --name namecontainer --mount=host --mount=volume image:tag tar bash -c "cd /data && tar xvf /backup/backup.tar.gz"
+
+# network
+docker network ls
+
+# create network
+docker network create --driver namedriver namenetwork
+
+# remove network
+docker network rm namenetwork
+
+# container with network from scratch
+docker container create --name name --network name image:tag
+
+# remove container from network
+docker network disconnect namenetwork namecontainer
+
+# add netowrk if container already exists
+docker network connect namenetwork namecontainer
+
+# inspect
+docker image inspect image:tag
+docker container inspect namecontainer
+docker volume inspect namevolume
+docker network inspect networkname
+
+# automaticly clean
+docker systems prune -> image, container, network, volume
