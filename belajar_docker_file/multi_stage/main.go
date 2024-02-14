@@ -1,26 +1,19 @@
 package main
 
 import (
-	"os"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"fmt"
+	"log"
+	"net/http"
+	"time"
 )
 
+func greet(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello World! %s", time.Now().Local())
+}
+
 func main() {
-	app := fiber.New()
+	http.HandleFunc("/", greet)
 
-	app.Use(logger.New())
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		data := struct {
-			Message string `json:"message"`
-		}{
-			Message: "hello",
-		}
-
-		return c.Status(fiber.StatusOK).JSON(data)
-	})
-
-	app.Listen(":" + os.Getenv("APP_PORT"))
+	log.Println("server is running on port 9000")
+	http.ListenAndServe(":9000", nil)
 }
